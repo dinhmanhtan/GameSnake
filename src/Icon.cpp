@@ -514,5 +514,13 @@ Icon::~Icon()
    icon_pause.Free();
    icon_replay.Free();
 
+   trophy.Free();
+   imgSnake.Free();
+   imgFruit.Free();
+   img_bkg.Free();
+   iChange.Free();
+   iReplay.Free();
+
+
 
 }

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1590377492 source:c:\users\acer\desktop\new folder\snake_game\main.cpp
+1590488181 source:c:\users\acer\desktop\new folder\snake_game\main.cpp
 	"Player2.h"
 	"Menu_Game.h"
 	"Icon.h"
@@ -395,7 +395,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1590138855 c:\users\acer\desktop\new folder\snake_game\include\baseobject.h
+1590421646 c:\users\acer\desktop\new folder\snake_game\include\baseobject.h
 	"CommonFunc.h"
 
 1588647428 c:\users\acer\desktop\new folder\snake_game\include\commonfunc.h
@@ -410,7 +410,7 @@
 	<stdlib.h>
 	<cmath>
 
-1590289683 c:\users\acer\desktop\new folder\snake_game\include\snake.h
+1590421575 c:\users\acer\desktop\new folder\snake_game\include\snake.h
 	"BaseObject.h"
 
 1590311140 source:c:\users\acer\desktop\new folder\snake_game\src\snake.cpp
@@ -422,18 +422,18 @@
 1586619201 c:\users\acer\desktop\new folder\snake_game\include\textobject.h
 	"BaseObject.h"
 
-1590227539 source:c:\users\acer\desktop\new folder\snake_game\src\menu_game.cpp
+1590488568 source:c:\users\acer\desktop\new folder\snake_game\src\menu_game.cpp
 	"Menu_Game.h"
 
-1590227539 c:\users\acer\desktop\new folder\snake_game\include\menu_game.h
+1590488567 c:\users\acer\desktop\new folder\snake_game\include\menu_game.h
 	"Player2.h"
 
-1590377339 source:c:\users\acer\desktop\new folder\snake_game\src\player2.cpp
+1590488380 source:c:\users\acer\desktop\new folder\snake_game\src\player2.cpp
 	"Player2.h"
 	<time.h>
 	<stdlib.h>
 
-1590377084 c:\users\acer\desktop\new folder\snake_game\include\player2.h
+1590488355 c:\users\acer\desktop\new folder\snake_game\include\player2.h
 	"Snake.h"
 	"TextObject.h"
 	"Icon.h"

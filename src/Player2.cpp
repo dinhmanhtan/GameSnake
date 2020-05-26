@@ -34,10 +34,8 @@ Player2::Player2(SDL_Renderer *render)
 
     int ret = background_p2.LoadIMG("Image/2Player/map6.png", render) ;
     int ret1 = back_ground.LoadIMG("Image/2Player/Image2.png", render) ;
-    int ret3 = img_s1.LoadIMG("Image/2Player/s1_1.png",render);
-    int ret2 = img_s2.LoadIMG("Image/2Player/s2_1.png",render);
 
-    if(!ret || !ret1 || !ret2 || !ret3)
+    if(!ret || !ret1 )
         cout << "Error : Load image ." <<endl;
 
     back_ground.rect_.w = SCREEN_WIDTH;
@@ -47,10 +45,6 @@ Player2::Player2(SDL_Renderer *render)
     score_level[0]= 3;
     score_level[1] =3;
 
-    img_s1.rect_.x = Size2;
-    img_s1.rect_.y = Size2;
-    img_s2.rect_.x = 24*Size2;
-    img_s2.rect_.y = Size2;
 
 
 
@@ -116,13 +110,13 @@ Player2::Player2(SDL_Renderer *render)
 
     s1.Setup(render);
     s2.Setup(render) ;
-    s1.rect_.w = s1.rect_.h = Size2;
-    s2.rect_.w = s2.rect_.h = Size2 ;
+    s1.SetSize(Size2,Size2) ;
+    s2.SetSize(Size2,Size2) ;
 
     for(int i=0; i<5; i++)
     {
-    s1.head_state[i].rect_.w = s1.head_state[i].rect_.h = Size2;
-    s2.head_state[i].rect_.w = s2.head_state[i].rect_.h = Size2;
+    s1.head_state[i].SetSize(Size2,Size2);
+    s2.head_state[i].SetSize(Size2,Size2);
 
     }
 
@@ -255,7 +249,7 @@ void Player2::Draw_item(SDL_Renderer *render, Fruit *f, const int & num)
 
 void Player2::Draw_player2(SDL_Renderer *render, TTF_Font *font1,  TTF_Font *font2, const float &time_val, bool &pauseP2)
 {
-    if( !pauseP2) {
+    if( !pauseP2 && !game_over) {
 
       back_ground.Render(render);
 
@@ -299,7 +293,8 @@ void Player2::Draw_player2(SDL_Renderer *render, TTF_Font *font1,  TTF_Font *fon
       s1.rect_.y = (s1.num[i].y +5 )*Size2;
       s1.Render(render);
 
-   // Draw head when head coincides with body
+   // Vẽ lại đầu rắn khi đầu trùng vs thân
+
       s1.rect_.x = (s1.num[0].x +1)*Size2;
       s1.rect_.y = (s1.num[0].y +5 )*Size2;
 
@@ -469,8 +464,27 @@ void Player2::Snake_moving(const Uint8 *keyState , bool &pause) {
 void Player2::Update_p2(const float &delta, bool &pauseP2)
 {
 
- if(num_heart[0] ==0 || num_heart[1] == 0)
-    game_over = true;
+ if(num_heart[0] ==0 || num_heart[1] == 0) {       // Nếu mạng = 0 thì game over
+
+   if(num_heart[0] != 0)
+      result = s1Win;
+   else if(num_heart[1] != 0)
+      result = s2Win;
+   else {
+
+     if(s1.score < s2.score)
+        result = s2Win;
+     else if(s1.score > s2.score)
+        result = s1Win;
+     else
+        result = Tie;
+
+   }
+
+
+   game_over = true;
+
+ }
 
 
  if( !pauseP2) {
@@ -527,23 +541,11 @@ void Player2::Update_p2(const float &delta, bool &pauseP2)
 
    for(int i=1; i<s2.length_snake ; i++) {
 
-        if(s1.num[0] == s2.num[i] ) {
-            num_heart[0]--;
+        if(s1.num[0] == s2.num[i] )
+           handle_dead(s1);
 
-            dead[0] = true;
-            s1.length_snake =2;
-            s1.num[0].y = H_2 ;
-            s1.num[0].x = 3;
-            s1.num[1].x = 2;
-            s1.num[1].y = H_2;
-
-        }
     }
 
-
-
-    if( dead[0])
-       handle_dead(s1,delta);
 
     if(s1.num[0].y < H_2)
         dead[0] = false;
@@ -553,24 +555,10 @@ void Player2::Update_p2(const float &delta, bool &pauseP2)
 
 
       if(s1.num[0] == s2.num[0]) {
-            s1.length_snake =2;
-            s1.state = None;
-            num_heart[0]--;
-            dead[0] = true;
-            s1.num[0].y = H_2 ;
-            s1.num[0].x = 2;
-            s1.num[1].x = 1;
-            s1.num[1].y = H_2;
+           handle_dead(s1);
+           handle_dead(s2);
 
-            s2.length_snake =2;
-            s2.state = None;
-            dead[1] = true;
-            s2.num[0].y = H_2 ;
-            s2.num[0].x = W_2-3;
-            s2.num[1].x = W_2-2;
-            s2.num[1].y = H_2;
-            num_heart[1]--;
-    }
+      }
 
 
  // Handling snake 2 eat apple
@@ -625,22 +613,12 @@ void Player2::Update_p2(const float &delta, bool &pauseP2)
   // s2 va cham s1
      for(int i=1; i<s1.length_snake ; i++) {
 
-        if(s2.num[0] == s1.num[i] ) {
-            num_heart[1]--;
+        if(s2.num[0] == s1.num[i] )
+            handle_dead(s2);
 
-            dead[1] = true;
-
-            s2.length_snake = 2;
-            s2.num[0].y = H_2 ;
-            s2.num[0].x = W_2-3;
-            s2.num[1].x = W_2-2;
-            s2.num[1].y = H_2;
-
-        }
     }
 
-    if( dead[1])
-       handle_dead(s2,delta);
+
 
     if(s2.num[0].y < H_2)
         dead[1] = false;
@@ -953,10 +931,39 @@ void Player2::get_effect(Snake &s,const float &delta)
 
 }
 
-void Player2 :: handle_dead(Snake& s,const float &delta) {
+void Player2 :: handle_dead(Snake& s) {
 
-    s.state    = None;
     s.length_snake =2;
+    s.state = None;
+    s.paralyze = false;
+    s.Reverse  = false;
+    s.slowDown = false;
+
+
+   if(s1.num[0] == s.num[0] && s1.num[1]==s.num[1] ) {
+
+
+            num_heart[0]--;
+            dead[0] = true;
+            s1.num[0].y = H_2 ;
+            s1.num[0].x = 2;
+            s1.num[1].x = 1;
+            s1.num[1].y = H_2;
+
+
+
+   } else if(s2.num[0] == s.num[0] && s2.num[1]==s.num[1]) {
+
+
+
+            dead[1] = true;
+            s2.num[0].y = H_2 ;
+            s2.num[0].x = W_2-3;
+            s2.num[1].x = W_2-2;
+            s2.num[1].y = H_2;
+            num_heart[1]--;
+   }
+
 
 
 }

@@ -11,6 +11,7 @@ const int H_2 = 24 ;
 
 ///  2 Player Mode game
 
+enum Result{s1Win,s2Win,Tie,none};
 
 class Player2
 {
@@ -42,12 +43,12 @@ class Player2
        void Initial_fruit(Fruit* item, const int & num);
 
        void paralyze_effect(Snake& s, float time_paralyze,const float &delta);
-       void handle_dead(Snake& s,const float &delta);
+       void handle_dead(Snake& s);
 
     private:
 
 
-        BaseObject img_s1 , img_s2;
+
         Fruit cherry[5] ;
         Fruit banana[4];
         Fruit apple[3] ;
@@ -68,7 +69,7 @@ class Player2
         TextObject text_player[2] ;
         TextObject text_time ;
 
-        BaseObject background_p2 ;
+
         Snake s1,s2 ;
 
         Fruit mine[3] ;
@@ -80,6 +81,8 @@ class Player2
     public :
         BaseObject back_ground;
         bool game_over;
+        BaseObject background_p2 ;
+        Result result;
 
 };
 

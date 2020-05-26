@@ -60,6 +60,12 @@ Menu_Game::Menu_Game(SDL_Renderer *render)
   Load_imgIcon(render, "Image/menu/iconExit1.png",icon_exitP2[0] );
   Load_imgIcon(render, "Image/menu/iconExit.png",icon_exitP2[1] );
 
+  Load_imgIcon(render,"Image/icon/music.png",icon_musicP2[0]);
+  Load_imgIcon(render,"Image/icon/no_music.png",icon_musicP2[1]);
+
+  icon_musicP2[0].draw = true;
+  icon_musicP2[1].draw = false;
+
   for(int i=0 ; i<2; i++)
    {
      resume[i].draw = !i;
@@ -76,14 +82,34 @@ Menu_Game::Menu_Game(SDL_Renderer *render)
 
 
    set_iconP2();
+
+   // set text for mode 2 player
+
+    text_GOverP2.setText_Color(RED_COLOR);
+    text_GOverP2.SetRect(150,300);
+
+    text_playP2.setText_Color(WHITE_COLOR);
+    text_playP2.SetRect(190,450);
+    text_homeP2.setText_Color(WHITE_COLOR);
+    text_homeP2.SetRect(390,450);
+
+    text_playP2.SetText("Play again");
+    text_homeP2.SetText("Back home") ;
+
 }
 
 void Menu_Game::set_iconP2()
 {
 
     icon_pauseP2.SetSize(Size2+15,Size2+15) ;
-    icon_pauseP2.SetRect(14*Size2+7,Size2*3);
+    icon_pauseP2.SetRect(14*Size2+7,Size2*3+5);
     SDL_SetTextureColorMod(icon_pauseP2.GetObject(), 255,0,255) ;
+
+    icon_musicP2[0].SetSize(Size2+15,Size2+15);
+    icon_musicP2[1].SetSize(Size2+15,Size2+15);
+
+    icon_musicP2[0].SetRect(345,4);
+    icon_musicP2[1].SetRect(345,4);
 
 
 //
@@ -251,13 +277,30 @@ void Menu_Game::Draw_menuP2(SDL_Renderer *render, bool &pauseP2)
 }
 
 void Menu_Game::Check_menuP2(Player2 &p2, SDL_Event  g_event, bool &pauseP2,
-                            bool &running, bool &call_menu, bool& play_2, bool &play1)
+                            bool &running, bool &call_menu, bool& play_2, bool &play1, bool &playMusicP2)
 {
 
    if(g_event.type == SDL_MOUSEBUTTONDOWN ) {
       if(pauseP2 == false) {
 
-         if(CheckFocusWithRect(xMouse,yMouse,icon_pauseP2.rect_) )
+         //  play music
+         if(CheckFocusWithRect(xMouse,yMouse,icon_musicP2[0].rect_) && icon_musicP2[0].draw ) {
+
+             Mix_PauseMusic();
+              icon_musicP2[0].draw = false;
+              icon_musicP2[1].draw = true;
+              playMusicP2 = false;
+
+         } else  if(CheckFocusWithRect(xMouse,yMouse,icon_musicP2[1].rect_) && icon_musicP2[1].draw ) {
+
+                if(Mix_PausedMusic())
+                   Mix_ResumeMusic();
+
+               icon_musicP2[0].draw = true;
+               icon_musicP2[1].draw = false;
+               playMusicP2 = true;
+
+         } else if(CheckFocusWithRect(xMouse,yMouse,icon_pauseP2.rect_) )
              pauseP2 = true;
 
       } else {
@@ -285,7 +328,25 @@ void Menu_Game::Check_menuP2(Player2 &p2, SDL_Event  g_event, bool &pauseP2,
           }
 
       }
+      // Kiểm tra chơi lại sau khi game over mode 2 player
+
+      if(CheckFocusWithRect(xMouse,yMouse,text_playP2.rect_) && text_playP2.draw ) {
+                   pauseP2 = false;
+                   p2.set_up();
+
+      } else if(CheckFocusWithRect(xMouse,yMouse,text_homeP2.rect_) && text_homeP2.draw ) {
+
+                   p2.set_up();
+                   pauseP2 = false;
+                   play_2 = false;
+                   call_menu = true;
+     }
+
+
    }
+
+
+ // Check pos menu P2
 
     if(CheckFocusWithRect(xMouse,yMouse,resume[0].rect_) ) {
         resume[0].draw = false;
@@ -343,7 +404,7 @@ void Menu_Game::Check_menuP2(Player2 &p2, SDL_Event  g_event, bool &pauseP2,
 
 
    if(CheckFocusWithRect(xMouse,yMouse,icon_pauseP2.rect_) ) {
-         icon_pauseP2.SetSize(Size2+30,Size2+30) ;
+         icon_pauseP2.SetSize(Size2+28,Size2+28) ;
 
 
      } else {
@@ -352,11 +413,89 @@ void Menu_Game::Check_menuP2(Player2 &p2, SDL_Event  g_event, bool &pauseP2,
 
     }
 
+    if(CheckFocusWithRect(xMouse,yMouse,icon_musicP2[0].rect_) ) {
+         icon_musicP2[0].SetSize(Size2+30,Size2+30) ;
+         icon_musicP2[1].SetSize(Size2+30,Size2+30) ;
+
+
+     } else {
+        icon_musicP2[0].SetSize(Size2+15,Size2+15) ;
+        icon_musicP2[1].SetSize(Size2+15,Size2+15) ;
+
+    }
+
+
+ // Check pos text game over mode 2 player
+
+     if(CheckFocusWithRect(xMouse,yMouse,text_playP2.rect_) && text_playP2.draw )
+         text_playP2.setText_Color(YELLOW_COLOR);
+     else
+         text_playP2.setText_Color(GREEN_COLOR);
+
+
+    if(CheckFocusWithRect(xMouse,yMouse,text_homeP2.rect_) && text_homeP2.draw )
+         text_homeP2.setText_Color(YELLOW_COLOR);
+    else
+          text_homeP2.setText_Color(GREEN_COLOR);
+
+
+
+
+
 }
+
+void Menu_Game:: Draw_iconP2(SDL_Renderer *render)
+{
+
+  icon_pauseP2.Render(render);
+
+  if(icon_musicP2[0].draw)
+     icon_musicP2[0].Render(render);
+  else if(icon_musicP2[1].draw)
+     icon_musicP2[1].Render(render);
+
+
+
+
+
+}
+
+
+void Menu_Game::DrawGame_OverP2(Player2 &p2,SDL_Renderer *render ,TTF_Font *font, TTF_Font* font2) {
+
+
+
+
+   p2.background_p2.Render(render);
+
+   if(p2.result == 0)
+      text_GOverP2.SetText("Player 1 Win !!!!");
+   else if(p2.result == 1)
+      text_GOverP2.SetText("Player 2 Win !!!!");
+   else if(p2.result == 2)
+      text_GOverP2.SetText("!!!! Tie !!!!");
+
+   text_GOverP2.CreateGameText(font,render);
+   text_GOverP2.DrawText(render);
+
+   text_homeP2.CreateGameText(font2,render);
+   text_homeP2.DrawText(render);
+
+   text_playP2.CreateGameText(font2,render);
+   text_playP2.DrawText(render);
+
+
+
+
+
+}
+
 
 Menu_Game::~Menu_Game()
 {
     icon_pauseP2.Free();
+
+
 
     for(int i=0; i<2 ; i++) {
 
@@ -365,10 +504,20 @@ Menu_Game::~Menu_Game()
       home[i].Free();
       exit[i].Free() ;
 
+      icon_exitP2[i].Free();
+      icon_homeP2[i].Free();
+      icon_restartP2[i].Free();
+      icon_resumeP2[i].Free();
+      icon_musicP2[i].Free();
+
+
+
     }
 
     for(int i=0; i<itemMenu; i++)
       text_menu[i].~TextObject();
 
-
+    text_GOverP2.~TextObject();
+    text_homeP2.~TextObject();
+    text_playP2.~TextObject();
 }

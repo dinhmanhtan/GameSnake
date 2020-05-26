@@ -580,6 +580,8 @@ Snake::~Snake()
     for(int i=0; i<5; i++)
        head_state[i].Free();
 
+    barrier.Free();
+
 }
 
 

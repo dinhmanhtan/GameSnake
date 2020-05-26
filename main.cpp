@@ -123,6 +123,8 @@ void close()
 {
     g_background.Free();
     g_background_menu.Free();
+    img_control.Free();
+    bkground_menuP2.Free();
 
     SDL_DestroyRenderer(g_screen) ;
 
@@ -165,6 +167,7 @@ int main(int argc, char *argv[])
     bool draw_imgControl = true;
     bool sound   = true;
     bool draw_textG_overP1 = false;
+    bool playMusicP2 = true;
 
 
   // Set up Keyboard
@@ -182,9 +185,10 @@ int main(int argc, char *argv[])
   // Create Font and Text
    TTF_Font* font_score = TTF_OpenFont("font/VNI-Souvir.TTF",27) ;
    TTF_Font* font_menu = TTF_OpenFont("font/File-Bold.ttf", 60) ;
-   TTF_Font* font_G_over = TTF_OpenFont("font/File-Bold.ttf", 55) ;
+   TTF_Font* font_G_over = TTF_OpenFont("font/File-Bold.ttf", 75) ;
    TTF_Font* font_p2_score = TTF_OpenFont("font/starcraft.ttf", 20);
    TTF_Font* font_time = TTF_OpenFont("font/starcraft.ttf", 20);
+   TTF_Font* font_     = TTF_OpenFont("font/File-Bold.ttf", 35);
 
    if( font_score == NULL )
         cout << "Error : Null font ." <<endl;
@@ -224,7 +228,7 @@ int main(int argc, char *argv[])
          icon.Handle_GameOverP1(snake,g_event,Call_menu, menu.xMouse,menu.yMouse,time_over, running);
       }
       if(Play_2)
-        menu.Check_menuP2(player_2,g_event,pauseP2,running,Call_menu,Play_2,play1);
+        menu.Check_menuP2(player_2,g_event,pauseP2,running,Call_menu,Play_2,play1,playMusicP2);
 
 
 
@@ -247,10 +251,9 @@ int main(int argc, char *argv[])
 
       } else if( Play_2 == true && !Call_menu ) {
 
-        if(!Mix_PlayingMusic())
+        if(!Mix_PlayingMusic() && playMusicP2)
          Mix_PlayMusic(Music_1Player,-1);
-       else if( Mix_PausedMusic() )
-        Mix_ResumeMusic();
+
 
         if(player_2.game_over == false) {
 
@@ -261,13 +264,19 @@ int main(int argc, char *argv[])
               player_2.Draw_player2(g_screen,font_time,font_p2_score,delta,pauseP2);
               player_2.Snake_moving(keyState,pauseP2) ;
               player_2.Update_p2(delta,pauseP2);
-              menu.icon_pauseP2.Render(g_screen);
+              menu.Draw_iconP2(g_screen);
+
 
             } else {                                // Gọi menu mode 2 người
               bkground_menuP2.Render(g_screen);
               menu.Draw_menuP2(g_screen,pauseP2) ;
 
            }
+
+        } else {
+          menu.DrawGame_OverP2(player_2,g_screen,font_G_over,font_);
+
+
 
         }
 
