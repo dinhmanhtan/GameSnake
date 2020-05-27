@@ -1,7 +1,7 @@
 # GameSnake GAME SNAKE
 
  Snake là 1 game quen thuộc hầu hết với tất cả mọi người , bằng cách sử dụng các phím di chuyển hoặc W,A,S,D ta 
- điều khiển rắn sao choăn được nhiều mồi(quả) nhất.
+ điều khiển rắn sao cho ăn được nhiều mồi(quả) nhất.
  
  
  
