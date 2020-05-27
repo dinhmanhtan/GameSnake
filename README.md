@@ -15,6 +15,6 @@
  
  
  p/s : Đây là game đầu tiên của mình nên code  hơi dài dòng, lộn xộn và khó hiểu , hi vọng mọi người sẽ thích nó. Have your fun day!! <3
- GAME SNAKE
+
 
  
